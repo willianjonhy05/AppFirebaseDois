@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { auth } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
@@ -8,7 +8,7 @@ export default function LoginApp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigation = useNavigation(); // Hook para acessar a navegação
+  const navigation = useNavigation();
 
   const handleRegister = () => {
     createUserWithEmailAndPassword(auth, email, password)
@@ -26,7 +26,7 @@ export default function LoginApp() {
       .then((userCredential) => {
         console.log('Usuário logado:', userCredential.user);
         setIsAuthenticated(true);        
-        navigation.navigate('TarefasApp'); // Navegação após o login
+        navigation.navigate('TarefasApp');
       })
       .catch((error) => {
         console.error('Erro ao fazer login:', error.message);
@@ -35,10 +35,11 @@ export default function LoginApp() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Firebase Auth com Expo</Text>
+      <Text style={styles.title}>Autenticação Firebase</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor="#aaa"
         onChangeText={(text) => setEmail(text)}
         value={email}
         keyboardType="email-address"
@@ -47,24 +48,72 @@ export default function LoginApp() {
       <TextInput
         style={styles.input}
         placeholder="Senha"
+        placeholderTextColor="#aaa"
         onChangeText={(text) => setPassword(text)}
         value={password}
         secureTextEntry
       />
-      <Button title="Registrar" style={styles.butao} onPress={handleRegister} />
-      <Button title="Login" style={styles.butao} onPress={handleLogin} />
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Registrar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
       {isAuthenticated && <Text style={styles.success}>Autenticado com sucesso!</Text>}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20 },
-  title: { fontSize: 24, textAlign: 'center', marginBottom: 20 },
-  input: {
-    height: 40, borderColor: 'gray', borderWidth: 1,
-    marginBottom: 10, padding: 8
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#f0f4f8',
   },
-  success: { color: 'green', marginTop: 10, textAlign: 'center' },
-  butao: {marginVertical: 10},
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  input: {
+    height: 50,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
+  },
+  button: {
+    backgroundColor: '#1E90FF',
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 15,
+    shadowColor: '#1E90FF',
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 3,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  success: {
+    color: '#28A745',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: 20,
+  },
 });
